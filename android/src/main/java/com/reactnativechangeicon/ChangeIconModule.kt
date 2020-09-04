@@ -41,4 +41,23 @@ class ChangeIconModule(reactContext: ReactApplicationContext, private val packag
         )
         componentClass = activeClass
     }
+    
+    @ReactMethod
+    fun getCurrentIcon(promise: Promise) {
+
+        try {
+            val activity: Activity? = currentActivity
+            if (activity == null) {
+                promise.reject("Activity is null.")
+                return
+            }
+            if (componentClass.isEmpty()) componentClass = activity.componentName.className
+            val activeClass = "$packageName.MainActivity";
+            val iconActive = componentClass.replace(activeClass, "");
+            if(iconActive.isEmpty() || iconActive.equals(componentClass)) promise.resolve(null);
+            else promise.resolve(iconActive);
+        } catch  (e: Exception) {
+            promise.reject(e);
+        }
+    }
 }
